@@ -106,15 +106,11 @@ class Episode:
             objects = self._env.last_event.metadata['objects']
             visible_objects = [o['objectType'] for o in objects if o['visible']]
 
-            if self.target[0] in visible_objects:
+            if self.target[0] in visible_objects and self.target[1] in visible_objects:
                 self.tomato = True
+                self.bowl = True
                 if self.locate_tomato == 1:
                     reward += LOCATE_REWARD
-            else:
-                reward += WRONG_PENALTY
-
-            if self.target[1] in visible_objects:
-                self.bowl = True
                 if self.locate_bowl == 1:
                     reward += LOCATE_REWARD
             else:
