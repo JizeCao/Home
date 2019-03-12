@@ -78,7 +78,7 @@ class Episode:
         #         self.success = True
 
 
-        if action['action'] == 'LOCATE_TOMATO':
+        if action['action'] == 'LocateTomato':
             self.locate_tomato += 1
             objects = self._env.last_event.metadata['objects']
             visible_objects = [o['objectType'] for o in objects if o['visible']]
@@ -89,7 +89,7 @@ class Episode:
             else:
                 reward += WRONG_PENALTY
 
-        if action['action'] == 'LOCATE_BOWL':
+        if action['action'] == 'LocateBowl':
             self.locate_bowl += 1
             objects = self._env.last_event.metadata['objects']
             visible_objects = [o['objectType'] for o in objects if o['visible']]
@@ -100,7 +100,7 @@ class Episode:
             else:
                 reward += WRONG_PENALTY
 
-        if action['action'] == 'LOCATE_BOTH':
+        if action['action'] == 'LocateBoth':
             print(action['action'])
             self.locate_tomato += 1
             self.locate_bowl += 1
