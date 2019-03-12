@@ -30,8 +30,8 @@ class A3CAgent:
         self.max_episode_length = args.max_episode_length
         self.hidden_state_sz = args.hidden_state_sz
         self.action_space = args.action_space
-        self.locate_tomato = self.episode.locate_tomato
-        self.locate_bowl = self.episode.locate_bowl
+        self.locate_tomato = self.episode.locate_tomato > 0
+        self.locate_bowl = self.episode.locate_bowl > 0
 
     def sync_with_shared(self, shared_model):
         """ Sync with the shared model. """

@@ -33,6 +33,9 @@ class Episode:
         self.actions_list = [{'action':a} for a in BASIC_ACTIONS]
         self.actions_taken = []
 
+        self.locate_tomato = 0
+        self.locate_bowl = 0
+
     @property
     def environment(self):
         return self._env
