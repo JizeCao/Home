@@ -4,6 +4,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 from utils.misc_util import norm_col_init, weights_init
 import torchvision
+import numpy as np
 
 class ModelInput:
     """ Input to the model. """
@@ -35,6 +36,9 @@ class Model(torch.nn.Module):
         self.conv4 = nn.Conv2d(64, 64, 3, stride=1, padding=1)
         self.maxp4 = nn.MaxPool2d(2, 2)
 
+        self.augmented_linear = nn.Linear(2, 512)
+        self.augmented_combination = nn.Linear(1024 + 512, 1024)
+
         self.lstm = nn.LSTMCell(1024, args.hidden_state_sz)
         self.critic_linear = nn.Linear(args.hidden_state_sz, 1)
         self.actor_linear = nn.Linear(args.hidden_state_sz, args.action_space)
@@ -57,14 +61,21 @@ class Model(torch.nn.Module):
 
         self.train()
 
-    def embedding(self, state):
+    def embedding(self, state, tomato, bowl):
         x = F.relu(self.maxp1(self.conv1(state)))
         x = F.relu(self.maxp2(self.conv2(x)))
         x = F.relu(self.maxp3(self.conv3(x)))
         x = F.relu(self.maxp4(self.conv4(x)))
 
         x = x.view(x.size(0), -1)
-        return x
+        obj = np.zeros((1, 2))
+        if tomato:
+            obj[0, 0] = 1
+        if bowl:
+            obj[0, 1] = 1
+        additional_score = self.augmented_linear(torch.from_numpy(obj))
+        augmented_x = self.augmented_combination(torch.cat([x, additional_score]))
+        return augmented_x
 
     def a3clstm(self, x, hidden):
         hx, cx = self.lstm(x, hidden)
@@ -73,10 +84,10 @@ class Model(torch.nn.Module):
         actor_out = self.actor_linear(x)
         return actor_out, critic_out, (hx, cx)
 
-    def forward(self, model_input):
+    def forward(self, model_input, tomato, bowl):
         state = model_input.state
         (hx, cx) = model_input.hidden
-        x = self.embedding(state)
+        x = self.embedding(state, tomato, bowl)
         actor_out, critic_out, (hx, cx) = self.a3clstm(x, (hx, cx))
 
         return ModelOutput(policy=actor_out, value=critic_out, hidden=(hx, cx))

@@ -43,7 +43,7 @@ class A3CAgent:
         model_input = ModelInput()
         model_input.state = self.preprocess_frame(self.episode.state_for_agent())
         model_input.hidden = self.hidden
-        model_output = self.model.forward(model_input)
+        model_output = self.model.forward(model_input, self.locate_tomato, self.locate_bowl)
         return model_output
 
     @property
@@ -124,6 +124,8 @@ class A3CAgent:
 
         # populate the success
         self.success = self.episode.success
+        self.locate_tomato = self.episode.locate_tomato
+        self.locate_bowl = self.episode.locate_bowl
 
         return model_output.value, prob, action
 

@@ -3,7 +3,7 @@ import random
 import torch
 import time
 import sys
-from constants import GOAL_SUCCESS_REWARD, STEP_PENALTY, BASIC_ACTIONS
+from constants import GOAL_SUCCESS_REWARD, STEP_PENALTY, BASIC_ACTIONS, LOCATE_REWARD, WRONG_PENALTY
 from environment import Environment
 from utils.net_util import gpuify
 
@@ -66,13 +66,63 @@ class Episode:
         done = False
         action_was_successful = self.environment.last_action_success
 
-        if action['action'] == 'Done':
-            done = True
+        # if action['action'] == 'Done':
+        #     done = True
+        #     objects = self._env.last_event.metadata['objects']
+        #     visible_objects = [o['objectType'] for o in objects if o['visible']]
+        #     if self.target in visible_objects:
+        #         reward += GOAL_SUCCESS_REWARD
+        #         self.success = True
+
+
+        if action['action'] == 'LOCATE_TOMATO':
+            self.locate_tomato += 1
             objects = self._env.last_event.metadata['objects']
             visible_objects = [o['objectType'] for o in objects if o['visible']]
-            if self.target in visible_objects:
-                reward += GOAL_SUCCESS_REWARD
-                self.success = True
+            if self.target[0] in visible_objects:
+                self.tomato = True
+                if self.locate_tomato == 1:
+                    reward += LOCATE_REWARD
+            else:
+                reward += WRONG_PENALTY
+
+        if action['action'] == 'LOCATE_BOWL':
+            self.locate_bowl += 1
+            objects = self._env.last_event.metadata['objects']
+            visible_objects = [o['objectType'] for o in objects if o['visible']]
+            if self.target[1] in visible_objects:
+                self.bowl = True
+                if self.locate_bowl == 1:
+                    reward += LOCATE_REWARD
+            else:
+                reward += WRONG_PENALTY
+
+        if action['action'] == 'LOCATE_BOTH':
+            self.locate_tomato += 1
+            self.locate_bowl += 1
+            objects = self._env.last_event.metadata['objects']
+            visible_objects = [o['objectType'] for o in objects if o['visible']]
+
+            if self.target[0] in visible_objects:
+                self.tomato = True
+                if self.locate_tomato == 1:
+                    reward += LOCATE_REWARD
+            else:
+                reward += WRONG_PENALTY
+
+            if self.target[1] in visible_objects:
+                self.bowl = True
+                if self.locate_bowl == 1:
+                    reward += LOCATE_REWARD
+            else:
+                reward += WRONG_PENALTY
+
+        if self.tomato and self.bowl:
+            self.success = True
+            reward += GOAL_SUCCESS_REWARD
+
+        if self.locate_tomato > 0 and self.locate_bowl > 0:
+            done = True
 
         return reward, done, action_was_successful
 
@@ -90,12 +140,18 @@ class Episode:
                     local_executable_path=local_executable_path,
                     randomize_objects=args.randomize_objects,
                     seed=self.seed)
-            self._env.start(scene, self.gpu_id)
+            self._env.start(scene, self.gpu_d)
         else:
             self._env.reset(scene)
 
         # For now, single target.
-        self.target = 'Tomato'
+        #self.target = 'Tomato'
+
+        self.target = ('Tomato', 'Bowl')
+        self.tomato = False
+        self.bowl = False
+        self.locate_tomato = 0
+        self.locate_bowl = 0
         self.success = False
         self.cur_scene = scene
         self.actions_taken = []
