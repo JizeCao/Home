@@ -140,7 +140,7 @@ class Episode:
                     local_executable_path=local_executable_path,
                     randomize_objects=args.randomize_objects,
                     seed=self.seed)
-            self._env.start(scene, self.gpu_d)
+            self._env.start(scene, self.gpu_id)
         else:
             self._env.reset(scene)
 
