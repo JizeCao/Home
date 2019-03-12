@@ -73,7 +73,7 @@ class Model(torch.nn.Module):
             obj[0, 0] = 1
         if bowl:
             obj[0, 1] = 1
-        additional_score = self.augmented_linear(torch.from_numpy(obj))
+        additional_score = self.augmented_linear(torch.from_numpy(obj).cuda())
         augmented_x = self.augmented_combination(torch.cat([x, additional_score]))
         return augmented_x
 
