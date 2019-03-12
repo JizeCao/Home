@@ -86,8 +86,8 @@ class Episode:
                 self.tomato = True
                 if self.locate_tomato == 1:
                     reward += LOCATE_REWARD
-            else:
-                reward += WRONG_PENALTY
+            # else:
+            #     reward += WRONG_PENALTY
 
         if action['action'] == 'LocateBowl':
             self.locate_bowl += 1
@@ -97,25 +97,25 @@ class Episode:
                 self.bowl = True
                 if self.locate_bowl == 1:
                     reward += LOCATE_REWARD
-            else:
-                reward += WRONG_PENALTY
+            # else:
+            #     reward += WRONG_PENALTY
 
-        if action['action'] == 'LocateBoth':
-            print(action['action'])
-            self.locate_tomato += 1
-            self.locate_bowl += 1
-            objects = self._env.last_event.metadata['objects']
-            visible_objects = [o['objectType'] for o in objects if o['visible']]
-
-            if self.target[0] in visible_objects and self.target[1] in visible_objects:
-                self.tomato = True
-                self.bowl = True
-                if self.locate_tomato == 1:
-                    reward += LOCATE_REWARD
-                if self.locate_bowl == 1:
-                    reward += LOCATE_REWARD
-            else:
-                reward += WRONG_PENALTY
+        # if action['action'] == 'LocateBoth':
+        #     print(action['action'])
+        #     self.locate_tomato += 1
+        #     self.locate_bowl += 1
+        #     objects = self._env.last_event.metadata['objects']
+        #     visible_objects = [o['objectType'] for o in objects if o['visible']]
+        #
+        #     if self.target[0] in visible_objects and self.target[1] in visible_objects:
+        #         self.tomato = True
+        #         self.bowl = True
+        #         if self.locate_tomato == 1:
+        #             reward += LOCATE_REWARD
+        #         if self.locate_bowl == 1:
+        #             reward += LOCATE_REWARD
+            # else:
+            #     reward += WRONG_PENALTY
 
         if self.tomato and self.bowl:
             self.success = True
