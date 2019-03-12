@@ -36,8 +36,8 @@ class Model(torch.nn.Module):
         self.conv4 = nn.Conv2d(64, 64, 3, stride=1, padding=1)
         self.maxp4 = nn.MaxPool2d(2, 2)
 
-        self.augmented_linear = nn.Linear(2, 512)
-        self.augmented_combination = nn.Linear(1024 + 512, 1024)
+        self.augmented_linear = nn.Linear(2, 16)
+        self.augmented_combination = nn.Linear(1024 + 16, 1024)
 
         self.lstm = nn.LSTMCell(1024, args.hidden_state_sz)
         self.critic_linear = nn.Linear(args.hidden_state_sz, 1)
@@ -74,7 +74,7 @@ class Model(torch.nn.Module):
         if bowl:
             obj[0, 1] = 1
         additional_score = self.augmented_linear(torch.from_numpy(obj).cuda().float())
-        augmented_x = self.augmented_combination(torch.cat([x, additional_score]))
+        augmented_x = self.augmented_combination(torch.cat([x, additional_score], axis=1))
         return augmented_x
 
     def a3clstm(self, x, hidden):
