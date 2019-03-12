@@ -101,7 +101,6 @@ class Episode:
             #     reward += WRONG_PENALTY
 
         # if action['action'] == 'LocateBoth':
-        #     print(action['action'])
         #     self.locate_tomato += 1
         #     self.locate_bowl += 1
         #     objects = self._env.last_event.metadata['objects']
