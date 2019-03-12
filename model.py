@@ -74,7 +74,7 @@ class Model(torch.nn.Module):
         if bowl:
             obj[0, 1] = 1
         additional_score = self.augmented_linear(torch.from_numpy(obj).cuda().float())
-        augmented_x = self.augmented_combination(torch.cat([x, additional_score], axis=1))
+        augmented_x = self.augmented_combination(torch.cat([x, additional_score], dim=1))
         return augmented_x
 
     def a3clstm(self, x, hidden):
