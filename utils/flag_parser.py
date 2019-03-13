@@ -209,5 +209,10 @@ def parse_arguments():
         action='store_true',
         default=False,
         help='whether or not to resume from ./model/last_model')
+    parser.add_argument(
+        '--epsilon',
+        type=float,
+        default=1,
+        help='epsilon-greedy for training')
 
     return parser.parse_args()

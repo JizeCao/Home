@@ -8,6 +8,7 @@ from torch.autograd import Variable
 from model import ModelInput
 from utils.net_util import gpuify, resnet_input_transform
 from episode import Episode
+import random
 
 class A3CAgent:
     """ Base class for all actor-critic agents. """
@@ -32,6 +33,7 @@ class A3CAgent:
         self.action_space = args.action_space
         self.locate_tomato = self.episode.locate_tomato > 0
         self.locate_bowl = self.episode.locate_bowl > 0
+        self.episilon = args.epsilon
 
     def sync_with_shared(self, shared_model):
         """ Sync with the shared model. """
@@ -104,8 +106,13 @@ class A3CAgent:
         prob = F.softmax(model_output.policy, dim=1)
 
         if training:
+            prob = random.uniform()
             # Sample the action.
-            action = prob.multinomial(1).data
+            if prob > self.episilon:
+                action = prob.multinomial(1).data
+            else:
+                action = prob.argmax(dim=1, keepdim=True).data
+
         else:
             # Take the best action.
             action = prob.argmax(dim=1, keepdim=True).data
