@@ -108,7 +108,7 @@ class A3CAgent:
         if training:
             prob = random.uniform()
             # Sample the action.
-            if prob > self.episilon:
+            if prob < self.episilon:
                 action = prob.multinomial(1).data
             else:
                 action = prob.argmax(dim=1, keepdim=True).data
