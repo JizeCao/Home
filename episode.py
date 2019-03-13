@@ -3,7 +3,7 @@ import random
 import torch
 import time
 import sys
-from constants import GOAL_SUCCESS_REWARD, STEP_PENALTY, BASIC_ACTIONS, LOCATE_REWARD
+from constants import GOAL_SUCCESS_REWARD, STEP_PENALTY, BASIC_ACTIONS, LOCATE_REWARD, WRONG_PENALTY
 from environment import Environment
 from utils.net_util import gpuify
 
@@ -86,8 +86,8 @@ class Episode:
                 self.tomato = True
                 if self.locate_tomato == 1:
                     reward += LOCATE_REWARD
-            # else:
-            #     reward += WRONG_PENALTY
+            else:
+                reward += WRONG_PENALTY
 
         if action['action'] == 'LocateBowl':
             self.locate_bowl += 1
@@ -97,8 +97,8 @@ class Episode:
                 self.bowl = True
                 if self.locate_bowl == 1:
                     reward += LOCATE_REWARD
-            # else:
-            #     reward += WRONG_PENALTY
+            else:
+                reward += WRONG_PENALTY
 
         # if action['action'] == 'LocateBoth':
         #     self.locate_tomato += 1
@@ -118,7 +118,7 @@ class Episode:
 
         if self.tomato and self.bowl:
             self.success = True
-            reward += GOAL_SUCCESS_REWARD
+            # reward += GOAL_SUCCESS_REWARD
 
         if self.locate_tomato > 0 and self.locate_bowl > 0:
             done = True
