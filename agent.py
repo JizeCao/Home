@@ -106,9 +106,9 @@ class A3CAgent:
         prob = F.softmax(model_output.policy, dim=1)
 
         if training:
-            prob = random.uniform(0, 1)
+            episilon = random.uniform(0, 1)
             # Sample the action.
-            if prob < self.episilon:
+            if episilon < self.episilon:
                 action = prob.multinomial(1).data
             else:
                 action = prob.argmax(dim=1, keepdim=True).data
