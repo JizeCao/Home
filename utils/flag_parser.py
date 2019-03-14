@@ -214,5 +214,10 @@ def parse_arguments():
         type=float,
         default=1,
         help='epsilon-greedy for training')
+    parser.add_argument(
+        '--dropout',
+        type=float,
+        default=0,
+        help='Drop out ratio')
 
     return parser.parse_args()
