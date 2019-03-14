@@ -34,7 +34,7 @@ def parse_arguments():
     parser.add_argument(
         '--action-space',
         type=int,
-        default=7,
+        default=7 ,
         metavar='AS',
         help='# of actions (default: 5)')
     parser.add_argument(
@@ -214,5 +214,10 @@ def parse_arguments():
         type=float,
         default=1,
         help='epsilon-greedy for training')
+    parser.add_argument(
+        '--dropout',
+        type=float,
+        default=0,
+        help='Drop out ratio')
 
     return parser.parse_args()
