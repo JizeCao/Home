@@ -37,7 +37,7 @@ class Model(torch.nn.Module):
         self.maxp4 = nn.MaxPool2d(2, 2)
 
         self.augmented_linear = nn.Linear(2, 16)
-        self.augmented_combination = nn.Dropout(nn.Linear(1024 + 16, 1024), p=args.dropout)
+        self.augmented_combination = nn.Linear(1024 + 16, 1024)
 
         self.lstm = nn.LSTMCell(1024, args.hidden_state_sz)
         self.critic_linear = nn.Linear(args.hidden_state_sz, 1)
