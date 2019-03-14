@@ -148,7 +148,7 @@ class Episode:
 
         if self.tomato and self.bowl:
             self.success = True
-            # reward += GOAL_SUCCESS_REWARD
+            reward += GOAL_SUCCESS_REWARD
 
         if self.locate_tomato > 0 and self.locate_bowl > 0:
             #self.done_time += 1
