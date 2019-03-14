@@ -3,9 +3,10 @@ import random
 import torch
 import time
 import sys
-from constants import GOAL_SUCCESS_REWARD, STEP_PENALTY, BASIC_ACTIONS, LOCATE_REWARD, WRONG_PENALTY
+from constants import GOAL_SUCCESS_REWARD, STEP_PENALTY, BASIC_ACTIONS, LOCATE_REWARD, WRONG_PENALTY, PROGRESS_REWARD
 from environment import Environment
 from utils.net_util import gpuify
+import math
 
 
 class Episode:
@@ -77,6 +78,35 @@ class Episode:
         #         reward += GOAL_SUCCESS_REWARD
         #         self.success = True
 
+        (ag_x, ag_y, ag_z) = self._env.last_event.metadata['agent']['position']
+
+        objects = self._env.last_event.metadata['objects']
+        (tomato_x, tomato_y, tomato_z) = [o['position'] for o in objects if o['objectType'] == 'Tomato'][0]
+        (bowl_x, bowl_y, bowl_z) = [o['position'] for o in objects if o['objectType'] == 'Bowl'][0]
+
+        agent_tomato = math.fabs(ag_x - tomato_x) + math.fabs(ag_y - tomato_y) + math.fabs(ag_z - tomato_z)
+        agent_bowl = math.fabs(ag_x - bowl_x) + math.fabs(ag_y - bowl_y) + math.fabs(ag_z - bowl_z)
+
+        if not self.tomato and not self.bowl:
+            if agent_tomato < agent_bowl:
+                if agent_tomato < self.last_tomato_distance:
+                    reward += PROGRESS_REWARD
+            else:
+                if agent_bowl < self.last_bowl_distance:
+                    reward += PROGRESS_REWARD
+
+        elif not self.tomato:
+            if agent_tomato < self.last_tomato_distance:
+                reward += PROGRESS_REWARD
+
+        elif not self.bowl:
+            if agent_bowl < self.last_bowl_distance:
+                reward += PROGRESS_REWARD
+
+
+        self.last_tomato_distance = agent_tomato
+        self.last_bowl_distance = agent_bowl
+
 
         if action['action'] == 'LocateTomato':
             self.locate_tomato += 1
@@ -121,7 +151,11 @@ class Episode:
             # reward += GOAL_SUCCESS_REWARD
 
         if self.locate_tomato > 0 and self.locate_bowl > 0:
-            done = True
+            #self.done_time += 1
+            self.done = True
+
+        # if self.done_time > 2:
+        #     self.done = True
 
         return reward, done, action_was_successful
 
@@ -154,5 +188,10 @@ class Episode:
         self.success = False
         self.cur_scene = scene
         self.actions_taken = []
+
+#        self.done_time = 0
+
+        self.last_tomato_distance = float('inf')
+        self.last_bowl_distance = float('inf')
         
         return True
