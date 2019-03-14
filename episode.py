@@ -87,12 +87,9 @@ class Episode:
         bowl_pos = [o['position'] for o in objects if o['objectType'] == 'Bowl'][0]
         (bowl_x, bowl_y, bowl_z) = (bowl_pos['x'], bowl_pos['y'], bowl_pos['z'])
 
-        print(ag_x, ag_y, ag_z)
-        print(tomato_x, tomato_y, tomato_z)
-        print(bowl_x, bowl_y, bowl_z)
         agent_tomato = math.fabs(ag_x - tomato_x) + math.fabs(ag_y - tomato_y) + math.fabs(ag_z - tomato_z)
         agent_bowl = math.fabs(ag_x - bowl_x) + math.fabs(ag_y - bowl_y) + math.fabs(ag_z - bowl_z)
-        exit(0)
+
         if not self.tomato and not self.bowl:
             if agent_tomato < agent_bowl:
                 if agent_tomato < self.last_tomato_distance:
