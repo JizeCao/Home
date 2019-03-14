@@ -78,17 +78,20 @@ class Episode:
         #         reward += GOAL_SUCCESS_REWARD
         #         self.success = True
 
-        (ag_x, ag_y, ag_z) = self._env.last_event.metadata['agent']['position']
+        agent_pos= self._env.last_event.metadata['agent']['position']
+        (ag_x, ag_y, ag_z) = agent_pos['x'], agent_pos['y'], agent_pos['z']
 
         objects = self._env.last_event.metadata['objects']
-        (tomato_x, tomato_y, tomato_z) = [o['position'] for o in objects if o['objectType'] == 'Tomato'][0]
-        (bowl_x, bowl_y, bowl_z) = [o['position'] for o in objects if o['objectType'] == 'Bowl'][0]
+        tomato_pos = [o['position'] for o in objects if o['objectType'] == 'Tomato'][0]
+        (tomato_x, tomato_y, tomato_z) = (tomato_pos['x'], tomato_pos['y'], tomato_pos['z'])
+        bowl_pos = [o['position'] for o in objects if o['objectType'] == 'Bowl'][0]
+        (bowl_x, bowl_y, bowl_z) = (bowl_pos['x'], bowl_pos['y'], bowl_pos['z'])
 
         print(ag_x, ag_y, ag_z)
         print(tomato_x, tomato_y, tomato_z)
         print(bowl_x, bowl_y, bowl_z)
-        agent_tomato = math.fabs(float(ag_x) - float(tomato_x)) + math.fabs(float(ag_y) - float(tomato_y)) + math.fabs(float(ag_z) - float(tomato_z))
-        agent_bowl = math.fabs(float(ag_x) - float(bowl_x)) + math.fabs(float(ag_y) - float(bowl_y)) + math.fabs(float(ag_z) - float(bowl_z))
+        agent_tomato = math.fabs(ag_x - tomato_x) + math.fabs(ag_y - tomato_y) + math.fabs(ag_z - tomato_z)
+        agent_bowl = math.fabs(ag_x - bowl_x) + math.fabs(ag_y - bowl_y) + math.fabs(ag_z - bowl_z)
         exit(0)
         if not self.tomato and not self.bowl:
             if agent_tomato < agent_bowl:
