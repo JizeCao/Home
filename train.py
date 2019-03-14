@@ -54,6 +54,7 @@ def train(rank, args, create_shared_model, shared_model,
             # Compute gradient.
             player.model.zero_grad()
             loss['total_loss'].backward()
+
             torch.nn.utils.clip_grad_norm_(player.model.parameters(), 100.0)
             # Transfer gradient to shared model and step optimizer.
             transfer_gradient_from_player_to_shared(player, shared_model, gpu_id)
