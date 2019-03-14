@@ -81,7 +81,8 @@ def test(rank, args, create_shared_model, shared_model,
     """ Training loop for each agent. """
 
     random.seed(args.seed + rank)
-    scene = 'FloorPlan4_physics'#.format( 4 - (rank % (4-args.scenes)))     
+    scene = 'FloorPlan{}_physics'.format((rank % args.scenes) + 1)
+    # scene = 'FloorPlan4_physics'#.format( 4 - (rank % (4-args.scenes)))
     setproctitle.setproctitle('Test Agent: {}'.format(rank))
     gpu_id = args.gpu_ids[rank % len(args.gpu_ids)]
 
