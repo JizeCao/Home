@@ -78,37 +78,37 @@ class Episode:
         #         reward += GOAL_SUCCESS_REWARD
         #         self.success = True
 
-        agent_pos= self._env.last_event.metadata['agent']['position']
-        (ag_x, ag_y, ag_z) = agent_pos['x'], agent_pos['y'], agent_pos['z']
-
-        objects = self._env.last_event.metadata['objects']
-        tomato_pos = [o['position'] for o in objects if o['objectType'] == 'Tomato'][0]
-        (tomato_x, tomato_y, tomato_z) = (tomato_pos['x'], tomato_pos['y'], tomato_pos['z'])
-        bowl_pos = [o['position'] for o in objects if o['objectType'] == 'Bowl'][0]
-        (bowl_x, bowl_y, bowl_z) = (bowl_pos['x'], bowl_pos['y'], bowl_pos['z'])
-
-        agent_tomato = math.fabs(ag_x - tomato_x) + math.fabs(ag_y - tomato_y) + math.fabs(ag_z - tomato_z)
-        agent_bowl = math.fabs(ag_x - bowl_x) + math.fabs(ag_y - bowl_y) + math.fabs(ag_z - bowl_z)
-
-        if not self.tomato and not self.bowl:
-            if agent_tomato < agent_bowl:
-                if agent_tomato < self.last_tomato_distance:
-                    reward += PROGRESS_REWARD
-            else:
-                if agent_bowl < self.last_bowl_distance:
-                    reward += PROGRESS_REWARD
-
-        elif not self.tomato:
-            if agent_tomato < self.last_tomato_distance:
-                reward += PROGRESS_REWARD
-
-        elif not self.bowl:
-            if agent_bowl < self.last_bowl_distance:
-                reward += PROGRESS_REWARD
-
-
-        self.last_tomato_distance = agent_tomato
-        self.last_bowl_distance = agent_bowl
+        # agent_pos= self._env.last_event.metadata['agent']['position']
+        # (ag_x, ag_y, ag_z) = agent_pos['x'], agent_pos['y'], agent_pos['z']
+        #
+        # objects = self._env.last_event.metadata['objects']
+        # tomato_pos = [o['position'] for o in objects if o['objectType'] == 'Tomato'][0]
+        # (tomato_x, tomato_y, tomato_z) = (tomato_pos['x'], tomato_pos['y'], tomato_pos['z'])
+        # bowl_pos = [o['position'] for o in objects if o['objectType'] == 'Bowl'][0]
+        # (bowl_x, bowl_y, bowl_z) = (bowl_pos['x'], bowl_pos['y'], bowl_pos['z'])
+        #
+        # agent_tomato = math.fabs(ag_x - tomato_x) + math.fabs(ag_y - tomato_y) + math.fabs(ag_z - tomato_z)
+        # agent_bowl = math.fabs(ag_x - bowl_x) + math.fabs(ag_y - bowl_y) + math.fabs(ag_z - bowl_z)
+        #
+        # if not self.tomato and not self.bowl:
+        #     if agent_tomato < agent_bowl:
+        #         if agent_tomato < self.last_tomato_distance:
+        #             reward += PROGRESS_REWARD
+        #     else:
+        #         if agent_bowl < self.last_bowl_distance:
+        #             reward += PROGRESS_REWARD
+        #
+        # elif not self.tomato:
+        #     if agent_tomato < self.last_tomato_distance:
+        #         reward += PROGRESS_REWARD
+        #
+        # elif not self.bowl:
+        #     if agent_bowl < self.last_bowl_distance:
+        #         reward += PROGRESS_REWARD
+        #
+        #
+        # self.last_tomato_distance = agent_tomato
+        # self.last_bowl_distance = agent_bowl
 
 
         if action['action'] == 'LocateTomato':
