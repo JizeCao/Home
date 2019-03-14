@@ -155,7 +155,7 @@ class Episode:
 
         if self.locate_tomato > 0 and self.locate_bowl > 0:
             #self.done_time += 1
-            self.done = True
+            done = True
 
         # if self.done_time > 2:
         #     self.done = True
